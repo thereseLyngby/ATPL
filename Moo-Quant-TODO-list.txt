@@ -3,8 +3,8 @@ Moo-Quant TODO list
 
 Generator:
 - implement grid representation, to be able to calculate unitaries, and to able to make all permutations
-- implement generation, generate all permatutations of circuit with depth, and gate set
-- create unitaries, Create "function" that can calcuate unitaries (should have been done before?, 
+- implement generation, generate all permutations of circuit with depth, and gate set
+- create unitaries, Create "function" that can calculate unitaries (should have been done before?, 
 - implement hashing, Find hashing library and create the hash-map
 - store the finger prints in a data base ( only save the best)
 
@@ -17,6 +17,6 @@ Optimizer:
 
 
 If more time: 
-- see if we can parallize parts of the generation algorithm (should be the easy thing to parallize)
-- parallizing tiling (using the method,suggested by Avery)
+- see if we can parallelize parts of the generation algorithm (should be the easy thing to parallelize)
+- parallelizing tiling (using the method, suggested by Avery)
 -
