@@ -1,4 +1,6 @@
 local $(SML_LIB)/basis/basis.mlb
-
-in main.sml
+    ../quantum.mlb
+    generator.sig
+    generator.sml
+in main.sml 
 end

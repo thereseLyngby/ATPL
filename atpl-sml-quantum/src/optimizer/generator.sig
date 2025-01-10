@@ -1,0 +1,26 @@
+signature GENERATOR = sig 
+    datatype gate = I | X | Y | Z | H | T (*For now only these 1-qubit gates are handled*)
+
+    datatype ('key, 'val) hash_map = Hash_map of 'key -> 'val
+
+    type column = gate list
+    type tile = column list
+    type fingerprint = int
+    type depth = int
+    type height = int
+ 
+    type circuit_identities = (tile, fingerprint) hash_map 
+
+    type fingerprints = (fingerprint, (tile * depth)) hash_map (* should also store the cost of the tile (here the depth) *)
+    type database = circuit_identities * fingerprints
+
+    val generator : gate list * height * depth -> database
+    val hash : tile -> fingerprint
+    val gate_to_circuit_gate : gate -> Circuit.t
+    val circuit_gate_to_gate : Circuit.t -> gate
+    val make_init_columns : gate list * height -> column list
+
+    val pp_gate : gate -> string 
+    val pp_column : column -> string
+    val pp_column_list: column list -> string
+end

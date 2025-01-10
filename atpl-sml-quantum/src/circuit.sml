@@ -10,11 +10,11 @@ structure Circuit : CIRCUIT = struct
   val oo = op Seq
   val ** = op Tensor
 
-  fun id 1 = I
-  | id n = I ** id (n-1)
+  (*fun id 1 = I
+  | id n = I ** id (n-1) *)
 
-  fun swap1 k n =
-  (id (n-1)) ** SW ** id (k-n)
+  (*fun swap1 k n =
+  (id (n-1)) ** SW ** id (k-n) *)
 
 
 

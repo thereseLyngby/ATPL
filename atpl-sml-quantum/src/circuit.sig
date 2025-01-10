@@ -11,8 +11,8 @@ signature CIRCUIT = sig
   val pp   : t -> string
   val draw : t -> string
   val dim  : t -> int
-  val id   : int -> t
-  val swap : int * int -> t
-  val swap1 : int * int -> t
+  (*val id   : int -> t *)
+  (* val swap : int * int -> t *)
+  (*val swap1 : int * int -> t *)
 
 end
