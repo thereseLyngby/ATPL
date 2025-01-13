@@ -19,8 +19,12 @@ signature GENERATOR = sig
     val gate_to_circuit_gate : gate -> Circuit.t
     val circuit_gate_to_gate : Circuit.t -> gate
     val make_init_columns : gate list * height -> column list
+    val make_tiles : gate list * height * depth -> tile list
+
+    val cost : tile -> depth
 
     val pp_gate : gate -> string 
     val pp_column : column -> string
     val pp_column_list: column list -> string
+    val pp_tile_list : tile list -> string
 end
