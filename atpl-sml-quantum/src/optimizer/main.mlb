@@ -5,7 +5,5 @@ local $(SML_LIB)/basis/basis.mlb
     ../../lib/github.com/diku-dk/sml-complex/complex.mlb
     generator.sig
     generator.sml
-    hashing.sig
-    hashing.sml
 in main.sml 
 end
