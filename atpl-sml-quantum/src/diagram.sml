@@ -26,7 +26,7 @@ struct
   fun width nil = 0
     | width (x::_) = size x
 
-  val compact_p = true
+  val compact_p = false
 
   val {box   : string -> t,      (* gate *)
        line  : t,                (* line *)

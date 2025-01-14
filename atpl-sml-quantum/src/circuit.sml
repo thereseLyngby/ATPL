@@ -2,21 +2,13 @@ structure Circuit : CIRCUIT = struct
 
   infix |> fun a |> f = f a
 
-  datatype t = I | X | Y | Z | H | SW | T
+  datatype t = I | X | Y | Z | H | SW
              | Tensor of t * t
              | Seq of t * t
              | C of t
 
   val oo = op Seq
   val ** = op Tensor
-
-  (*fun id 1 = I
-  | id n = I ** id (n-1) *)
-
-  (*fun swap1 k n =
-  (id (n-1)) ** SW ** id (k-n) *)
-
-
 
   fun pp t =
       let fun maybePar P s = if P then "(" ^ s ^ ")" else s
@@ -25,7 +17,7 @@ structure Circuit : CIRCUIT = struct
                   Tensor(t1,t2) => maybePar (p > 4) (pp 4 t1 ^ " ** " ^ pp 4 t2)
                 | Seq(t1,t2) => maybePar (p > 3) (pp 3 t1 ^ " oo " ^ pp 3 t2)
                 | C t => "C" ^ pp 8 t
-                | I => "I" | X => "X" | Y => "Y" | Z => "Z" | H => "H" | SW => "SW" | T => "T"
+                | I => "I" | X => "X" | Y => "Y" | Z => "Z" | H => "H" | SW => "SW"
     in pp 0 t
     end
 
@@ -40,12 +32,10 @@ structure Circuit : CIRCUIT = struct
                 | Y => Diagram.box "Y"
                 | Z => Diagram.box "Z"
                 | H => Diagram.box "H"
-                | T => Diagram.box "T"
                 | C X => Diagram.cntrl "X"
                 | C Y => Diagram.cntrl "Y"
                 | C Z => Diagram.cntrl "Z"
                 | C H => Diagram.cntrl "H"
-                | C T => Diagram.cntrl "T"
                 | C _ => raise Fail ("Circuit.draw: Controlled circuit " ^
                                      pp t ^ " cannot be drawn")
       in dr t |> Diagram.toString

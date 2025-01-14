@@ -18,7 +18,7 @@ structure Semantics :> SEMANTICS = struct
       end
 
   fun pp_mat (m:mat) : string =
-      let val m = M.map pp_c m
+      let val m = M.map pp_c m |> M.memoize
           val sz = foldl (fn (e,a) => Int.max(a,size e)) 1
                          (List.concat (M.listlist m))
       in M.pp sz (fn x => x) m
@@ -26,7 +26,7 @@ structure Semantics :> SEMANTICS = struct
 
   (* Semantics *)
   fun matmul (t1:mat,t2:mat) : mat =
-      M.matmul_gen C.* C.+ (C.fromInt 0) t1 t2
+      M.matmul_gen C.* C.+ (C.fromInt 0) t1 t2 |> M.memoize
 
   (* See https://en.wikipedia.org/wiki/Kronecker_product *)
   fun tensor (a: mat,b:mat) : mat =
@@ -38,7 +38,7 @@ structure Semantics :> SEMANTICS = struct
                      fn (i,j) =>
                         C.* (M.sub(a,i div p, j div q),
                              M.sub(b,i mod p, j mod q))
-                   )
+                   ) |> M.memoize
       end
 
   (* Generalised control - see Feynman '59:
@@ -84,11 +84,6 @@ structure Semantics :> SEMANTICS = struct
            | Seq(t1,t2) => matmul(sem t2,sem t1)
            | Tensor(t1,t2) => tensor(sem t1,sem t2)
            | C t => control (sem t)
-           | T => let val rsqrt2 = C.fromRe (1.0 / Math.sqrt 2.0)
-                in let val e_val = C.* (rsqrt2,C.exp (C.* (ci, (C.fromRe(Math.pi / 4.0) ))))
-                in M.fromListList [[rsqrt2,c0],[c0,e_val]]
-                end
-                end
       end
 
   type ket = int list (* list of 0's and 1's *)
@@ -141,4 +136,56 @@ structure Semantics :> SEMANTICS = struct
           val n = log2 (Vector.length s)
       in Vector.mapi (fn (i,p) => (toKet(n,i), p)) v
       end
+
+  (* Interpreter *)
+
+  type vec = state
+
+  fun flatten (a:mat) : vec =
+      let val rows = M.nRows a
+          val cols = M.nCols a
+      in Vector.tabulate(rows * cols,
+                         fn i => M.sub(a,i div cols,i mod cols))
+      end
+
+  fun unflatten (r,c) (v:vec) : mat =
+      if Vector.length v <> r * c then raise Fail ("unflatten(" ^ Int.toString r ^ "," ^
+                                                   Int.toString c ^ ",[" ^ pp_state v ^ "])")
+      else M.tabulate(r,c,fn (i,j) => Vector.sub(v,i*c+j)) (* row-major *)
+
+  fun unvec (r:int,c:int) (v:vec) : mat =  (* create NxN matrix from vector with stacked column vectors *)
+      unflatten (r,c) v |> M.transpose
+
+  fun vec (a:mat) : vec =
+      M.transpose a |> flatten
+
+  fun vecSplit (v:vec) : vec * vec =
+      let val n = Vector.length v div 2
+      in (VectorSlice.vector(VectorSlice.slice(v,0,SOME n)),
+          VectorSlice.vector(VectorSlice.slice(v,n,NONE)))
+      end
+
+  fun mapRows f (a:mat) : mat =
+      List.tabulate(M.nRows a,
+                    fn i => f(M.row i a))
+                   |> M.fromVectorList
+
+  fun interp (t:Circuit.t) (v:vec) : vec =
+      case t of
+          Circuit.Seq(t1,t2) => interp t2 (interp t1 v)
+        | Circuit.Tensor(A,B) =>
+          let val Af = interp A
+              val Bf = interp B
+              val V = unvec (pow2(Circuit.dim A),pow2(Circuit.dim B)) v
+              val W = mapRows Bf (M.transpose V)
+              val Y = mapRows Af (M.transpose W)
+          in vec Y
+          end
+        | Circuit.C A =>
+          let val (v1,v2) = vecSplit v
+          in Vector.concat[v1,interp A v2]
+          end
+        | Circuit.I => v
+        | _ => eval t v
+
 end

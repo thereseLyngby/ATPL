@@ -19,6 +19,10 @@ mlkit`, assuming you have Homebrew installed.
 
 On Linux, you may download binaries from the respective repositories.
 
+The framework also supports the generation of [Futhark](http://futhark-lang.org)
+[5] code for simulating circuits. Futhark is available for most platforms. For
+installation details, see [http://futhark-lang.org](http://futhark-lang.org).
+
 ## Compiling the Source Code
 
 To compile the source code and run the tests, just execute `make test` in the
@@ -132,21 +136,64 @@ Result distribution when evaluating c on |101> :
 9. Investigate how large circuits (in terms of the number of qubits) you may
    simulate in less than 10 seconds on a standard computer.
 
+10. Compare the performance of the Kronecker-free interpreter with the
+    performance of the `eval` function.
+
+11. Synthesize a Futhark [5] simulator for a specific quantum circuit and run it
+    with different state vectors. You may start by copying the files
+    `comp_ex1.sml` and `comp_ex1.mlb` available in the `src` folder. The
+    `Makefile` contains code for generating a file `ex1.fut` containing a
+    synthesized function for simulating the circuit defined in
+    `comp_ex1.sml`. You may generate the file by writing `make ex1.fut`. To load
+    the file `ex1.fut` into the Futhark REPL, execute the following commands
+    (after having installed [Futhark](http://futhark-lang.org):
+
+	```
+	$ make clean ex1.fut
+	$ (cd fut; futhark pkg sync)
+	$ futhark repl ex1.fut
+	[0]> m
+	[[(0.0, -0.9999999999999998), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)],
+	 [(0.0, 0.0), (0.0, 0.0), (0.0, 0.9999999999999998), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)],
+	 [(0.0, 0.0), (0.0, -0.9999999999999998), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)],
+	 [(0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.9999999999999998), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)],
+	 [(0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, -0.9999999999999998), (0.0, 0.0), (0.0, 0.0)],
+	 [(0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.9999999999999998)],
+	 [(0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, -0.9999999999999998), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)],
+	 [(0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.9999999999999998), (0.0, 0.0)]]
+	[1]> f (map C.i64 [1,0,0,0,0,0,0,0])
+	[(0.0, -0.9999999999999998), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)]
+    ```
+	Futhark is available for most
+    operating systems, including Linux and macos. More information about Futhark
+    is available from [http://futhark-lang.org](http://futhark-lang.org).
+
 ## Project Suggestions
 
 1. Implement tooling, based on [4] (but simplified) to find alternative
    (sub-)circuits of degree _n_, for some small _n_.
 
 2. Investigate possibilities for identifying if two qubits are entangled by a
-   circuit.
+   circuit [8,9].
 
-3. Implement a larger quantum algorithm of choice using the Standard ML
-   framework.
+3. Implement a larger quantum algorithm (e.g., [Grover's
+   algorithm](https://en.wikipedia.org/wiki/Grover%27s_algorithm)) of choice
+   using the Standard ML framework. You may get inspiration from the [Quantum
+   Algorithm Zoo](https://quantumalgorithmzoo.org/).
 
-4. Explore the possibility of using alternative (nested) matrix representations
-   for specifying the semantics of circuits. Currently, tensor products are
-   expanded eagerly, although using pull-arrays, but sparsity and algebraic
-   properties are not exploited.
+4. Investigate the possibility for simulating quantum circuits involving only
+   the Clifford gates efficiently using compact state representations.
+
+5. Explore the possibility of writing transformations that push `T` gates to the
+   end of a circuit and control-gates to the beginning of a circuit.
+
+6. Compare (both practically and theoretically) the state vector simulator
+   developed here with the [Qiskit Aer](https://qiskit.github.io/qiskit-aer/)
+   state vector simulator [6,7], in particular with respect to run-time
+   complexity.
+
+7. Implement a couple of the circuits evaluated in [7] in the framework
+   presented here and evaluate their performance.
 
 ## Literature
 
@@ -167,3 +214,29 @@ generation of circuit
 identities](https://iopscience.iop.org/article/10.1088/2058-9565/ad5b16/pdf). Quantum
 Science and Technology, Volume 9, Number 4. July 2024. Published by IOP
 Publishing Ltd. https://doi.org/10.1088/2058-9565/ad5b16.
+
+[5] Martin Elsman, Troels Henriksen, and Cosmin Oancea. Parallel Programming in
+Futhark. Edition 0.8. Department of Computer Science, University of
+Copenhagen. Edition Nov
+22, 2023. [latest-pdf](https://readthedocs.org/projects/futhark-book/downloads/pdf/latest/).
+
+[6] Jun Doi and Hiroshi Horii. Cache Blocking Technique to Large Scale Quantum
+Computing Simulation on Supercomputers. 2020 IEEE International Conference on
+Quantum Computing and Engineering (QCE), Denver, CO, USA, 2020, pp. 212-222,
+2020. https://doi.org/10.1109/QCE49297.2020.00035
+
+[7] Jennifer Faj, Ivy Peng, Jacob Wahlgren, Stefano Markidis. Quantum Computer
+Simulations at Warp Speed: Assessing the Impact of GPU Acceleration A Case Study
+with IBM Qiskit Aer, Nvidia Thrust & cuQuantum. July 2023.
+https://doi.org/10.48550/arXiv.2307.14860
+
+[8] Perdrix, S. (2008). Quantum Entanglement Analysis Based on Abstract
+Interpretation. In: Alpuente, M., Vidal, G. (eds) Static
+Analysis. SAS 2008. Lecture Notes in Computer Science, vol 5079. Springer,
+Berlin, Heidelberg. https://doi.org/10.1007/978-3-540-69166-2_18
+
+[9] Nicola Assolini, Alessandra Di Pierro, and Isabella
+Mastroeni. 2024. Abstracting Entanglement. In Proceedings of the 10th ACM
+SIGPLAN International Workshop on Numerical and Symbolic Abstract Domains (NSAD
+'24). Association for Computing Machinery, New York, NY, USA,
+34–41. https://doi.org/10.1145/3689609.3689998
