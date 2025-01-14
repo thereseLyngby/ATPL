@@ -55,11 +55,23 @@ structure Generator : GENERATOR = struct
 
   fun cost (tile : tile) : depth =
     foldl (fn (col, acc) => if (List.all (fn g => g = I) col) then acc else acc + 1) 0 tile
-  
-  fun tile_to_unitary (tile: tile) : Semantics.mat =
-    Semantics.sem (foldl (fn (col, cols) => (foldl (fn (gate, rows) => (gate_to_circuit_gate gate) ** rows) col) oo cols) tile)
 
-(* THE PP REALM *)
+  fun column_to_circuit (col : column) : Circuit.t =
+    case col of
+        [] => raise Fail "Empty Columns not allowed\n"
+      | g::gs => foldl (fn (g0, g_acc) => Circuit.Tensor(g_acc, (gate_to_circuit_gate g0))) (gate_to_circuit_gate g) gs
+
+
+  fun tile_to_circuit (tile : tile) : Circuit.t =
+    case tile of
+        [] => raise Fail "Empty Tiles not allowed\n"
+      | [[]] => raise Fail "Empty Tiles not allowed\n"
+      | col::cols => foldl (fn (c0, c_acc) => Circuit.Seq(c_acc,(column_to_circuit c0))) (column_to_circuit col) cols
+
+  fun tile_to_matrix (tile : tile) : Semantics.mat =
+    Semantics.sem (tile_to_circuit tile)
+
+(* REALM OF THE PP *)
   fun pp_list (list : 'a list, pp_a : 'a -> string) =
     let fun pp_list1 (lst : 'a list) =
       case lst of

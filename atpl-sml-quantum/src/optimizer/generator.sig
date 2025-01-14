@@ -5,7 +5,7 @@ signature GENERATOR = sig
 
     type column = gate list
     type tile = column list
-    type fingerprint = int
+    type fingerprint = real
     type depth = int
     type height = int
  
@@ -20,6 +20,18 @@ signature GENERATOR = sig
     val circuit_gate_to_gate : Circuit.t -> gate
     val make_init_columns : gate list * height -> column list
     val make_tiles : gate list * height * depth -> tile list
+    (* Only here for testing puposes*)
+    val column_to_circuit : column -> Circuit.t
+    val tile_to_circuit : tile -> Circuit.t
+
+    (* Here not only for testing purposes *)
+    val tile_to_matrix : tile -> Semantics.mat
+
+    (*hashing dimser*)
+    val gen_random_complex : Random.generator -> Complex.complex
+    val gen_random_complex_list : Random.generator * int -> Complex.complex list
+    val normalize_complex_list : Complex.complex list -> Complex.complex list
+    
 
     val cost : tile -> depth
 
