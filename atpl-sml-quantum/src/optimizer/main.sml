@@ -1,4 +1,4 @@
-    open Generator Random
+    open QGenerator Random
 
 fun run a =
     (print "Run all tests: \n";
@@ -17,9 +17,16 @@ fun run a =
      print ("Semantics of circiut:\n" ^ Semantics.pp_mat(tile_to_matrix [[X, I], [I, I], [X, Y]] ) ^ "\n");
      print "test 6: Column to circuit works\n";
      print ("Column to circuit\n" ^ (Circuit.draw (column_to_circuit [X, Y, Z])) ^ "\n");
-     print "test 6: Test tile to circuit works\n";
+     print "test 7: Test tile to circuit works\n";
      print ("Tile to circuit\n" ^ (Circuit.draw (tile_to_circuit [[X, Y, Z], [I, X, Z]])) ^ "\n");
-     print (Real.toString (Random.random (Random.newgen ())) )
+     print "test 8 generate random complex \n";
+     print (Complex.toString  (gen_random_complex (Random.newgen ()) ) ^ "\n\n");
+     print "test 9: generate list of random complexes \n" ;
+     print (pp_list (gen_random_complex_list (Random.newgen (), 10), Complex.toString) ^ "\n\n");
+     print "test 10: normalize list of complex numbers \n";
+     print (pp_list (normalize_complex_list (gen_random_complex_list (Random.newgen (), 10)), Complex.toString) ^ "\n\n");
+     print "test 11: normalize list and check sums to 1 \n";
+     print (Real.toString ( Math.sqrt (foldl (fn (elm, acc) => Complex.re (Complex.* (elm, Complex.conj elm)) + acc ) 0.0 (normalize_complex_list (gen_random_complex_list (Random.newgen (), 10))))) ^ "\n\n")
     )
 
-val () = run 1
+val () = run 42

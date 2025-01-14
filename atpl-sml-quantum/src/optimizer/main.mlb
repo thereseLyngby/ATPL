@@ -3,7 +3,7 @@ local $(SML_LIB)/basis/basis.mlb
     ../../lib/github.com/diku-dk/sml-random/random.mlb
     ../../lib/github.com/diku-dk/sml-matrix/matrix.mlb
     ../../lib/github.com/diku-dk/sml-complex/complex.mlb
-    generator.sig
-    generator.sml
+    qGenerator.sig
+    qGenerator.sml
 in main.sml 
 end
