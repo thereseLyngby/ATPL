@@ -1,0 +1,5 @@
+local $(SML_LIB)/basis/basis.mlb
+    ../main.mlb
+    ../../quantum.mlb
+in test_tile_to_matrix.sml 
+end
