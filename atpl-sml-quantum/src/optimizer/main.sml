@@ -12,8 +12,9 @@ fun run a =
      print "Expected: [[[I I], [I I]],[[I I], [I X]],[[I I], [X I]],[[I I], [X X]],[[I X], [I I]],[[I X], [I X]],[[I X], [X I]],[[I X], [X X]],[[X I], [I I]],[[X I], [I X]],[[X I], [X I]],[[X I], [X X]],[[X X], [I I]],[[X X], [I X]],[[X X], [X I]],[[X X], [X X]]]\n";
      print ("Result: " ^ (pp_tile_list (make_tiles ([I, X], 2, 2))) ^ "\n\n");
      print "test 4: print cost of tile\n";
-     print ("Result: " ^ Int.toString (cost [[X, I], [I, I], [I, X]]) ^ "\n")
-
+     print ("Result: " ^ Int.toString (cost [[X, I], [I, I], [I, X]]) ^ "\n\n")
+     print " test 5: convert tile to unitary matrix\n"
+     print ("Semantics of circiut:\n" ^ pp_mat(tile_to_unitary [[X, I], [I, I], [X, Y]] ) ^ "\n");
     )
 
 val () = run 1

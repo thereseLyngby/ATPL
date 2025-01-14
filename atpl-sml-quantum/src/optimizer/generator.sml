@@ -55,6 +55,9 @@ structure Generator : GENERATOR = struct
 
   fun cost (tile : tile) : depth =
     foldl (fn (col, acc) => if (List.all (fn g => g = I) col) then acc else acc + 1) 0 tile
+  
+  fun tile_to_unitary (tile: tile) : Semantics.mat =
+    Semantics.sem (foldl (fn (col, cols) => (foldl (fn (gate, rows) => (gate_to_circuit_gate gate) ** rows) col) oo cols) tile)
 
 (* THE PP REALM *)
   fun pp_list (list : 'a list, pp_a : 'a -> string) =
