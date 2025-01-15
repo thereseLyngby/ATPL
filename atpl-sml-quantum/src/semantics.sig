@@ -8,8 +8,8 @@ sig
   eqtype ket
   val ket    : int list -> ket
   val pp_ket : ket -> string
-
-  type state
+  (* This is different from original implementation*)
+  type state = Complex.complex vector
   val pp_state : state -> string
   val init     : ket -> state
   val eval     : Circuit.t -> state -> state (* use sem *)

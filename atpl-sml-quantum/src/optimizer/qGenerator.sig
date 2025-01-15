@@ -1,7 +1,7 @@
 signature QGENERATOR = sig 
     datatype gate = I | X | Y | Z | H (*For now only these 1-qubit gates are handled*)
 
-    datatype ('key, 'val) hash_map = Hash_map of 'key -> 'val
+    type ('key, 'val) hash_map = ('key, 'val) Table.table
 
     type column = gate list
     type tile = column list
@@ -27,11 +27,13 @@ signature QGENERATOR = sig
     (* Here not only for testing purposes *)
     val tile_to_matrix : tile -> Semantics.mat
 
-    (*hashing dimser*)
+    (*Fingerprints dimser*)
     val gen_random_complex : Random.generator -> Complex.complex
     val gen_random_complex_list : Random.generator * int -> Complex.complex list
     val normalize_complex_list : Complex.complex list -> Complex.complex list
-    
+    val gen_fingerprint : tile * Complex.complex list * Complex.complex list -> real
+    val tile_to_word : tile -> word
+    val fingerprint_equality : fingerprint * fingerprint -> bool
 
     val cost : tile -> depth
 
