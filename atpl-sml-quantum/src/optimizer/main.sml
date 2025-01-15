@@ -48,6 +48,10 @@ fun run a =
         print((Bool.toString (fingerprint_equality(f0, f0+0.0000000000000001))) ^"\n\n"
             ^"test 18: Fingerprint not equal\n"
             ^ (Bool.toString (fingerprint_equality(f0, f1)) ^ "\n\n"))
-     end)
+     end;
+     print "test 19: Basic generator\n";
+     print "Gate set: [I, X], height=2, depth = 2\n";
+     print (pp_database (generator([I, X], 2, 2)) ^ "\n\n")
+     )
 
 val () = run 42

@@ -42,4 +42,5 @@ signature QGENERATOR = sig
     val pp_column : column -> string
     val pp_column_list: column list -> string
     val pp_tile_list : tile list -> string
+    val pp_database : database -> string
 end

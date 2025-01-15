@@ -179,7 +179,7 @@ structure QGenerator : QGENERATOR = struct
         val circuit_identities = make_identities(tiles, psi0, psi1)
         val fingerprints = make_fingerprints(circuit_identities)
     in
-      raise Fail "Hi Jóhann :3"
+      (circuit_identities, fingerprints)
     end
 
 (* REALM OF THE PP *)
@@ -203,4 +203,20 @@ structure QGenerator : QGENERATOR = struct
   fun pp_tile (t : tile) = pp_column_list t
 
   fun pp_tile_list (tiles : tile list) =  pp_list (tiles, pp_tile)
+
+  fun pp_tuple ((a, b) : 'a * 'b, pp_a : 'a -> string, pp_b : 'b -> string) : string =
+    "(" ^ pp_a a ^ ", " ^ pp_b b ^ ")"
+
+  fun pp_database ((circuit_identities, fps) : database) : string =
+    let val circuit_id_str = pp_list (Table.list circuit_identities, 
+                                      fn tp => pp_tuple (tp, pp_tile, 
+                                                         Real.toString))
+        val fp_str = pp_list (Table.list fps, 
+                              fn tp => pp_tuple (tp, Real.toString, 
+                                                 fn t => 
+                                                  pp_tuple (t, 
+                                                            pp_tile, 
+                                                            Int.toString)))
+    in "Circuit identities:\n" ^ circuit_id_str ^ " \n\n fingerprints:\n" ^ fp_str 
+    end
 end
