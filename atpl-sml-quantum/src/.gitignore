@@ -2,3 +2,5 @@ run
 MLB
 *~
 *.exe
+*.d
+*.o
