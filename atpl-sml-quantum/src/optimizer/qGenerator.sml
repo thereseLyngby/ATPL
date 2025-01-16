@@ -70,6 +70,12 @@ structure QGenerator : QGENERATOR = struct
       | [[]] => raise Fail "Empty Tiles not allowed\n"
       | col::cols => foldl (fn (c0, c_acc) => Circuit.Seq(c_acc,(column_to_circuit c0))) (column_to_circuit col) cols
 
+  (* TRY TO MAKE THURSDAY IF TIME!!! *)
+  (*fun circuit_to_tile (t : Circuit.t) : tile = 
+    case t of 
+        Seq (a, b) => (circuit_to_tile a) @ (circuit_to_tile b)
+      | Tensor (a, b) => *)
+
   fun tile_to_matrix (tile : tile) : Semantics.mat =
     Semantics.sem (tile_to_circuit tile)
   
