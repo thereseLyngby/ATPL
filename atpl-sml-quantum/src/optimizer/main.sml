@@ -1,4 +1,4 @@
-    open QGenerator Random
+    open QGenerator Random Optimizer
 
 fun run a =
     (print "Run all tests: \n";
@@ -51,7 +51,26 @@ fun run a =
      end;
      print "test 19: Basic generator\n";
      print "Gate set: [I, X], height=2, depth = 2\n";
-     print (pp_database (generator([I, X], 2, 2)) ^ "\n\n")
-     )
+     print (pp_database (generator([I, X], 2, 2)) ^ "\n\n");
+     (*print "test 20: Make columns for sliding window tiles:\n";
+     print "Input column=[X, Y, Z, I, H]\nOutput:\n";
+     print ((pp_column_list (split_column ([X, Y, Z, I, H], 5, 3))) ^ "\n");*)
+     print "test 21: Make non-overlapping tiles from circuit:\n";
+     print "Input circuit=[[X, X, Z], [H, H, Z], [I, I, Z]], tile dimension= 2 x 2\nOutput:\n";
+     print ((pp_tile_list (circuit_to_tile_partition ([[X, X, Z], [H, H, Z], [I, I, Z]], 2, 2))) ^ "\n\n");
+     let val circuit = [[X, X, Z], [H, H, Z], [I, I, Z]]
+         val height = 2
+         val depth = 2
+         val database = generator([I, X, Z, H], height, depth)
+         val circuit_tile_part = circuit_to_tile_partition (circuit, height, depth)
+         val circuit_tiles_optimized_once = optimize_tile_partition (circuit_tile_part, database)
+    in 
+        print ("Test 22: Optimize Circuit tiles once\nBefore optimization:\n" ^
+            (pp_tile_list circuit_tile_part) ^"\nAfter optimization:\n" ^
+            (pp_tile_list circuit_tiles_optimized_once) ^ "\n\n"
+     ) end;
+     print "test 23: Test circuit can remove superflous I's\n";
+     print (pp_column_list (remove_I_columns [[I, X, X], [Y, I, Y], [Z, Z, I]]) ^ "\n\n")
+    )
 
 val () = run 42
