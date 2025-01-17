@@ -128,17 +128,47 @@ structure Optimizer : OPTIMIZER = struct
             | circuit => circuit
     end
   
-  fun helper (tiles : QG.tile list, original_depth : QG.depth, current_depth : QG.depth, acc_depth : QG.depth) : QG.tile list list =
+  fun split_into_layers (tiles : QG.tile list, 
+                         depth_in_tiles : QG.depth) : QG.tile list list =
     case tiles of
-        [] => []
-      | t :: tail =>
-        if acc_depth < original_depth then
-          t :: helper (tail, original_depth, current_depth, acc_depth + current_depth)
-        else
-          
+       [] => []
+      | _ => 
+        List.take (tiles, 
+                   depth_in_tiles) 
+          :: split_into_layers (List.drop (tiles, depth_in_tiles), 
+                                depth_in_tiles)
 
-  fun tile_partition_to_circuit (tiles : QG.tile list, reconstruted_height : height,reconstruted_depth : depth) : tile =
-    raise Fail "Not implemented"
+  fun split (list : 'a list) : 'a * 'a list = 
+    case list of 
+        [] => raise Fail "Empty list!"
+      | hd :: tail => (hd, tail)  
+
+  fun heads_and_tails (list_list : 'a list list) : 'a list * 'a list list =
+    case list_list of 
+        []          => ([], [])
+      | list::lists => 
+          let val (head, tail) = split list 
+              val (heads, tails) = heads_and_tails lists 
+          in (head :: heads, tail :: tails) end
+
+  fun transpose (list_list : 'a list list) : 'a list list =
+    case list_list of 
+        [] => []
+      | _ => 
+          let val (heads, tails) = heads_and_tails list_list
+          in heads :: transpose tails end
+
+  fun join_tiles (tiles : QG.tile list) : QG.tile =
+    foldlr (fn (tile, acc ))
+
+  fun tile_partition_to_circuit (tiles : QG.tile list, 
+                                 reconstruted_height : QG.height,
+                                 grid_depth : QG.depth,
+                                 reconstruted_depth : QG.depth) : QG.tile =
+    let val depth_in_tiles = List.length tiles / grid_depth
+        val layers = split_into_layers (tiles, depth_in_tiles)
+        val transposed_layers = transpose layers 
+        val join_layers =   
 
   (* A single optimization pass of a circuit*)
   (*
