@@ -22,5 +22,5 @@ signature OPTIMIZER = sig
 
     val optimization_pass : QGenerator.tile * QGenerator.database * QGenerator.height * QGenerator.depth -> QGenerator.tile  
 
-    (*val optimize_circuit : QGenerator.tile * QGenerator.gate list * int *QGenerator.height * QGenerator.depth -> QGenerator.tile*)
+    val optimize_circuit : QGenerator.tile * QGenerator.gate list * int *QGenerator.height * QGenerator.depth -> QGenerator.tile
 end

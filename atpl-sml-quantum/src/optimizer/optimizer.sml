@@ -174,7 +174,7 @@ structure Optimizer : OPTIMIZER = struct
         val optimized_circuit_I_cols_removed = remove_I_columns (optimized_circuit_column_padding_removed)
     in optimized_circuit_I_cols_removed
     end
-  (*
+    
   fun loop (circuit : QG.tile, db: QG.database, tile_height : QG.height, tile_depth : QG.depth, iterations : int) : QG.tile =
     case iterations of
         0 => circuit
@@ -183,6 +183,6 @@ structure Optimizer : OPTIMIZER = struct
 
   fun optimize_circuit (circuit : QG.tile, gate_set : QG.gate list, iterations : int, tile_height : QG.height, tile_depth : QG.depth) : QG.tile =
     let val db = QG.generator(gate_set, tile_height, tile_depth)
-    in loop (circuit, db, iterations, tile_height, tile_depth) end *)
+    in loop (circuit, db, iterations, tile_height, tile_depth) end
 
 end

@@ -94,11 +94,11 @@ fun run a =
         print ("Optimized circuit: \n" ^ pp_tile optimized_circuit ^ "\n\n")
     end;
     print ("test 26: Test we can make optimization passes\n");
-    let val circuit = [[X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z]]
+    let val circuit = [[X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z], [X, Y, Z],[X, Y, Z],[X, Y, Z],[X, Y, Z],[X, Y, Z],[X, Y, Z],[X, Y, Z], [X,Y,Z] , [X, Y, Z]]
         val height = 2 
         val depth = 2
         val gate_set = [I, X, Y, Z]
-        val optimized_circuit = optimize_circuit (circuit, gate_set, 2 height, depth)
+        val optimized_circuit = optimize_circuit (circuit, gate_set, 2, height, depth)
     in print ("Original circuit:\n" ^ pp_tile circuit ^ "\n");
        print ("Optimized circuit: \n" ^ pp_tile optimized_circuit ^ "\n\n")
     end
