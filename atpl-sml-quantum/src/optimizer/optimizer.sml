@@ -127,7 +127,7 @@ structure Optimizer : OPTIMIZER = struct
               [] => [List.tabulate (column_height, fn i => QG.I)]
             | circuit => circuit
     end
-  
+  (*
   fun helper (tiles : QG.tile list, original_depth : QG.depth, current_depth : QG.depth, acc_depth : QG.depth) : QG.tile list list =
     case tiles of
         [] => []
@@ -135,36 +135,54 @@ structure Optimizer : OPTIMIZER = struct
         if acc_depth < original_depth then
           t :: helper (tail, original_depth, current_depth, acc_depth + current_depth)
         else
-          
+  *)
 
-  fun tile_partition_to_circuit (tiles : QG.tile list, reconstruted_height : height,reconstruted_depth : depth) : tile =
-    raise Fail "Not implemented"
+  (* Gather all columns in column cur_column from tile partitioning *)
+  fun helper (columns : QG.column list, num_columns : int, cur_column : int) : QG.column list =
+    case columns of
+       [] => []
+      | _ => 
+        let val row = List.take (columns, num_columns)
+        in (List.nth (row, cur_column)) :: (helper (List.drop (columns, num_columns), num_columns, cur_column))
+        end
+ 
+  fun tile_partition_to_circuit (tiles : QG.tile list, original_height : QG.height,original_depth : QG.depth) : QG.tile =
+    let val num_horzontal_tiles = original_height div (List.length (List.hd tiles)) (* Should always have no remainder *)
+        val flatten_tiles = List.concat tiles
+    in
+      List.tabulate (original_depth,
+        fn col_idx => 
+          List.concat(helper(flatten_tiles, original_depth, col_idx))
+      )
+    end
 
   (* A single optimization pass of a circuit*)
-  (*
-  fun optimization_pass (circuit : QG.tile, tile_db : QG.database, tile_height : QG.height, tile_depth : QG.depth, max_iter : int) : QG.tile =
+  
+  fun optimization_pass (circuit : QG.tile, tile_db : QG.database, tile_height : QG.height, tile_depth : QG.depth) : QG.tile =
     let 
         val og_height = List.length (List.hd circuit)
         val og_depth = List.length circuit
         val circuit_tile_partition = circuit_to_tile_partition (circuit, tile_height, tile_depth)
         val optimized_tile_partition = optimize_tile_partition (circuit_tile_partition, tile_db)
-        (* NOT DONE YET!!! *)
-        val optimized_circuit = tile_partition_to_circuit (optimized_tile_partition, og_height, og_depth) (* FIX THIS SOMEHOW :( *)
-        val optimized_circuit_I_cols_removed = remove_I_columns (optimized_circuit)
+        val optimized_circuit = 
+          tile_partition_to_circuit (
+            optimized_tile_partition 
+            ,og_height + (og_height mod tile_height)
+            , og_depth + (og_depth mod tile_depth))
+        val optimized_circuit_column_padding_removed =
+          List.map (fn col => List.take (col, og_height)) optimized_circuit
+        val optimized_circuit_I_cols_removed = remove_I_columns (optimized_circuit_column_padding_removed)
     in optimized_circuit_I_cols_removed
-    end*)
-    
-  
-  (* fun split_circuit ((og_t, og_height, og_depth) : circuit, 
-                   grid_height : height, 
-                   grid_depth : depth) : tile list =
-    let val split_depth = 
-      split_tile_depth (og_t, og_height, og_depth, grid_depth)
-        val split_height = 
-          map (fn col => split_column (col, og_height, grid_height)) split_depth
-    in gather split_height end *)
+    end
+  (*
+  fun loop (circuit : QG.tile, db: QG.database, tile_height : QG.height, tile_depth : QG.depth, iterations : int) : QG.tile =
+    case iterations of
+        0 => circuit
+      | _ =>
+        loop(optimization_pass(circuit, db, tile_height, tile_depth), db, tile_height, tile_depth, iterations-1)
 
-
-
+  fun optimize_circuit (circuit : QG.tile, gate_set : QG.gate list, iterations : int, tile_height : QG.height, tile_depth : QG.depth) : QG.tile =
+    let val db = QG.generator(gate_set, tile_height, tile_depth)
+    in loop (circuit, db, iterations, tile_height, tile_depth) end *)
 
 end
