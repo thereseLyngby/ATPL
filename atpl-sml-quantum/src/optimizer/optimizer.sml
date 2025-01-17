@@ -128,18 +128,31 @@ structure Optimizer : OPTIMIZER = struct
             | circuit => circuit
     end
   
+  fun helper (tiles : QG.tile list, original_depth : QG.depth, current_depth : QG.depth, acc_depth : QG.depth) : QG.tile list list =
+    case tiles of
+        [] => []
+      | t :: tail =>
+        if acc_depth < original_depth then
+          t :: helper (tail, original_depth, current_depth, acc_depth + current_depth)
+        else
+          
+
+  fun tile_partition_to_circuit (tiles : QG.tile list, reconstruted_height : height,reconstruted_depth : depth) : tile =
+    raise Fail "Not implemented"
+
   (* A single optimization pass of a circuit*)
-  fun optimization_pass (circuit : QG.tile, tile_db : QG.database, tile_height : QG.height, tile_depth : QG.depth, max_iter : Int) : QG.circuit =
+  (*
+  fun optimization_pass (circuit : QG.tile, tile_db : QG.database, tile_height : QG.height, tile_depth : QG.depth, max_iter : int) : QG.tile =
     let 
         val og_height = List.length (List.hd circuit)
         val og_depth = List.length circuit
         val circuit_tile_partition = circuit_to_tile_partition (circuit, tile_height, tile_depth)
-        val optimized_tile_partition = optimize_tile_partition (circuit_tile_partition, db)
+        val optimized_tile_partition = optimize_tile_partition (circuit_tile_partition, tile_db)
         (* NOT DONE YET!!! *)
         val optimized_circuit = tile_partition_to_circuit (optimized_tile_partition, og_height, og_depth) (* FIX THIS SOMEHOW :( *)
         val optimized_circuit_I_cols_removed = remove_I_columns (optimized_circuit)
     in optimized_circuit_I_cols_removed
-    end
+    end*)
     
   
   (* fun split_circuit ((og_t, og_height, og_depth) : circuit, 
