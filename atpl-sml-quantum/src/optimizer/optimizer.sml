@@ -183,6 +183,6 @@ structure Optimizer : OPTIMIZER = struct
 
   fun optimize_circuit (circuit : QG.tile, gate_set : QG.gate list, iterations : int, tile_height : QG.height, tile_depth : QG.depth) : QG.tile =
     let val db = QG.generator(gate_set, tile_height, tile_depth)
-    in loop (circuit, db, iterations, tile_height, tile_depth) end
+    in loop (circuit, db, tile_height, tile_depth, iterations) end
 
 end
