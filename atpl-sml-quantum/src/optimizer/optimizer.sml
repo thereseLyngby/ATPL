@@ -2,7 +2,6 @@ structure Optimizer : OPTIMIZER = struct
   
   structure QG = QGenerator
 
-  (* type circuit = (QG.tile, QG.depth, QG.height) *)
 
   fun get_fingerprint (tile : QG.tile, c_ids : QG.circuit_identities) : QG.fingerprint =
     case Table.lookup c_ids tile of 
@@ -127,15 +126,6 @@ structure Optimizer : OPTIMIZER = struct
               [] => [List.tabulate (column_height, fn i => QG.I)]
             | circuit => circuit
     end
-  (*
-  fun helper (tiles : QG.tile list, original_depth : QG.depth, current_depth : QG.depth, acc_depth : QG.depth) : QG.tile list list =
-    case tiles of
-        [] => []
-      | t :: tail =>
-        if acc_depth < original_depth then
-          t :: helper (tail, original_depth, current_depth, acc_depth + current_depth)
-        else
-  *)
 
   (* Gather all columns in column cur_column from tile partitioning *)
   fun helper (columns : QG.column list, num_columns : int, cur_column : int) : QG.column list =

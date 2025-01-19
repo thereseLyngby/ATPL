@@ -35,7 +35,7 @@ structure QGenerator : QGENERATOR = struct
          | Circuit.Y => Y
          | Circuit.Z => Z
          | Circuit.H => H
-         | _ => raise Fail "Stoopid, bad gate"
+         | _ => raise Fail "Gate not supported"
 
   fun make_init_columns (gates, height) : column list =
     case height of 
@@ -69,12 +69,6 @@ structure QGenerator : QGENERATOR = struct
         [] => raise Fail "Empty Tiles not allowed\n"
       | [[]] => raise Fail "Empty Tiles not allowed\n"
       | col::cols => foldl (fn (c0, c_acc) => Circuit.Seq(c_acc,(column_to_circuit c0))) (column_to_circuit col) cols
-
-  (* TRY TO MAKE THURSDAY IF TIME!!! *)
-  (*fun circuit_to_tile (t : Circuit.t) : tile = 
-    case t of 
-        Seq (a, b) => (circuit_to_tile a) @ (circuit_to_tile b)
-      | Tensor (a, b) => *)
 
   fun tile_to_matrix (tile : tile) : Semantics.mat =
     Semantics.sem (tile_to_circuit tile)
@@ -129,18 +123,10 @@ structure QGenerator : QGENERATOR = struct
         "" tile))
     in
       case str of 
-          NONE => raise Fail "Stoopid, badie baddie u fuck up. Could not convert from int to str"
+          NONE => raise Fail "Could not generate string"
         | SOME(s) => s
     end
   
-  (*fun fingerprint_to_word (fp : fingerprint) : word =
-    let val str = Real.toString fp
-    in case Word.fromString of
-        NONE => "Dummy dummy"
-      | Some
-  *)
-  (*fun fingerprint_to_word (fp:real) : word = (Word8Vector.foldl word8Hash 0w0 o PackReal.toBytes) fp
-    hvor word8Hash : Word8.word * word -> word*)
 
   fun fingerprint_to_word (fp : fingerprint) : word =
     Word.fromInt (Real.floor (fp / 0.000000000000002))
