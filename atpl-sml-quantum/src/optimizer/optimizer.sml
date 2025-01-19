@@ -142,9 +142,18 @@ structure Optimizer : OPTIMIZER = struct
     case columns of
        [] => []
       | _ => 
-        let val row = List.take (columns, num_columns)
-        in (List.nth (row, cur_column)) :: (helper (List.drop (columns, num_columns), num_columns, cur_column))
-        end
+        if num_columns <= List.length columns then
+          let val row = List.take (columns, num_columns)
+          in 
+            if cur_column < List.length (row) then
+              if num_columns <= List.length columns then
+                (List.nth (row, cur_column)) :: (helper (List.drop (columns, num_columns), num_columns, cur_column))
+              else
+                raise Fail "Cannot drop more columns than number of existing columns."
+            else raise Fail "Try to take an entry from a list that does not exist."
+          end
+        else
+          raise Fail ("Length of columns= " ^ (Int.toString (List.length columns)) ^ ", num_columns =" ^(Int.toString num_columns))
  
   fun tile_partition_to_circuit (tiles : QG.tile list, original_height : QG.height,original_depth : QG.depth) : QG.tile =
     let val num_horzontal_tiles = original_height div (List.length (List.hd tiles)) (* Should always have no remainder *)
@@ -167,8 +176,8 @@ structure Optimizer : OPTIMIZER = struct
         val optimized_circuit = 
           tile_partition_to_circuit (
             optimized_tile_partition 
-            ,og_height + (og_height mod tile_height)
-            , og_depth + (og_depth mod tile_depth))
+            ,og_height + ((tile_height - (og_height mod tile_height)) mod tile_height)
+            , og_depth + ((tile_depth - ((og_depth mod tile_depth))) mod tile_depth))
         val optimized_circuit_column_padding_removed =
           List.map (fn col => List.take (col, og_height)) optimized_circuit
         val optimized_circuit_I_cols_removed = remove_I_columns (optimized_circuit_column_padding_removed)

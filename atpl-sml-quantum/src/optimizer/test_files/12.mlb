@@ -10,5 +10,5 @@ local $(SML_LIB)/basis/basis.mlb
     ../optimizer.sml
     constants.sig
     constants.sml
-in file2.sml
+in 12.sml
 end

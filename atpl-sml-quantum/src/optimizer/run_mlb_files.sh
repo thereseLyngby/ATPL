@@ -21,7 +21,7 @@ for file in "$MLB_DIR"/*.mlb; do
   
   # Compile the .mlb file
   echo "Compiling $file..."
-  mlkit "$file"
+  mlkit "$file" >/dev/null
   
   # Check if compilation produced a 'run' executable
   if [ ! -f "./run" ]; then
