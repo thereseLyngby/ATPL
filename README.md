@@ -1,10 +1,10 @@
 # Squanto, an quantum optimizer in SML
-This project builds on top of the library [Quantum Circuits and Simulation in Standard ML for the ATPL MSc Course](https://github.com/diku-dk/atpl-sml-quantum)'
+This project builds on top of the library [Quantum Circuits and Simulation in Standard ML for the ATPL MSc Course](https://github.com/diku-dk/atpl-sml-quantum)
 by Martin Elsman 
 
 ## Dependencies
 Because of this we require all the packages that the library does, such as MLKit and and smlpkg.
-To install these please follow the guide in the README, in the inner repo
+To install these please follow the guide in the README, in the inner repo, or [Quantum Circuits and Simulation in Standard ML for the ATPL MSc Course](https://github.com/diku-dk/atpl-sml-quantum)
 
 ## Setting up
 Before trying to compile the tests and benchmarks, please make sure to be in the atpl-sml-quantum/ directory 
